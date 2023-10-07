@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Complaint Form</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #222b299f;
+      background-image: url('/images/image.jpg');
+  /* Additional background properties to control the display of the image */
+      /*background-image: url('/image.jpg'); */
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .container input,
+    .container textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .container .error {
+      color: red;
+      font-size: 14px;
+    }
+
+    .container input[type="submit"] {
+      background-color: #49f37c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    .container input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    .container textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    .character-count {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .optional {
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    .navbar {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      flex-direction: row-reverse
+    }
+
+    .navbar h1 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Complaint Form</h1>
+    <form id="complaintForm" method="POST" action="/submit-complaint">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <span class="error" id="nameError"></span>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      <span class="error" id="emailError"></span>
+      
+      <label for="transactionNumber">Transaction Number:</label>
+      <input type="text" id="transactionNumber" name="transactionNumber">
+      <span class="error" id="transactionNumberError"></span>
+      <span class="optional">(Optional)</span>
+      
+      <label for="complaintDescription">Complaint Description:</label>
+      <textarea id="complaintDescription" name="complaintDescription" required maxlength="1000"></textarea>
+      <span class="error" id="complaintDescriptionError"></span>
+      <div class="character-count">Character count: <span id="charCount">0</span>/1000</div>
+      
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+  <script>
+    const complaintDescriptionInput = document.getElementById('complaintDescription');
+    const charCount = document.getElementById('charCount');
+
+    complaintDescriptionInput.addEventListener('input', () => {
+      const count = complaintDescriptionInput.value.length;
+      charCount.textContent = count;
+    });
+  </script>
+</body>
+</html>

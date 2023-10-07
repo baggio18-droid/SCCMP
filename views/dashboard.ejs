@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SCCMP - List of Complaints</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+    integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+    integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+    crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #4527a0, #9b59b6);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header Styles */
+    .header {
+      background-color: #4527a0;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .logout-button {
+      float: right;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      height: 100vh;
+      width: 125px;
+      margin-top: 75px;
+      background-color: #4527a0;
+      color: #fff;
+      position: fixed;
+      top: 0;
+      left: -100;
+      transition: left 0.3s ease;
+      z-index: 999;
+      overflow: hidden;
+      overflow-y: hidden;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar a:hover {
+      background-color: #6c2e9b;
+      padding-left: 30px;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      margin-left: 125px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: margin-left 0.3s ease;
+      overflow: auto;
+    }
+
+    .main-content.active {
+      margin-left: 250px;
+      margin-right: auto;
+    }
+
+    .main-content h2 {
+      margin-top: 0;
+    }
+
+    /* Table Styles */
+    .dashboard-list,
+    .complaints-list,
+    .complaint-status-tracking,
+    .inbox-list {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .dashboard-list table,
+    .complaints-list table,
+    .complaint-status-tracking table,
+    .inbox-list table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dashboard-list th,
+    .dashboard-list td,
+    .complaints-list th,
+    .complaints-list td,
+    .complaint-status-tracking th,
+    .complaint-status-tracking td,
+    .inbox-list th,
+    .inbox-list td {
+      padding: 8px;
+      text-align: center;
+    }
+
+    .dashboard-list th,
+    .complaints-list th,
+    .complaint-status-tracking th,
+    .inbox-list th {
+      background-color: #4527a0;
+      color: #fff;
+    }
+
+    .dashboard-list tr:nth-child(even),
+    .complaints-list tr:nth-child(even),
+    .complaint-status-tracking tr:nth-child(even),
+    .inbox-list tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .dashboard-list td button,
+    .complaints-list td button,
+    .complaint-status-tracking td button,
+    .inbox-list td button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+
+    .complaints-list td .btn-send,
+    .complaint-status-tracking td .btn-send,
+    .inbox-list td .btn-update {
+      background-color: #27ae60;
+      color: #fff;
+    }
+
+    .complaints-list td .btn-spam,
+    .complaint-status-tracking td .btn-spam {
+      background-color: #c0392b;
+      color: #fff;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .fadeIn {
+      animation: fadeIn 0.6s;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar.active {
+        left: 0;
+      }
+
+      .main-content.active {
+        margin-left: 0;
+      }
+    }
+
+    /* Footer Styles */
+    .footer {
+      background-color: #4527a0;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>SCCMP</h1>
+    <a href="#" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </a>
+    <a href="/login" class="logout-button">
+      <button class="btn btn-primary">Logout</button>
+    </a>
+
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <!-- Sidebar content goes here -->
+    <nav>
+      <ul>
+        <li><a href="#" onclick="showTable('dashboard')">Dashboard</a></li>
+        <li><a href="#" onclick="showTable('complaints')">Complaints</a></li>
+        <li><a href="#" onclick="showTable('complaintStatusTable')">Complaint Status Tracking</a></li>
+        <li><a href="#" onclick="showTable('inbox')">Inbox Menu</a></li>
+        <!-- Add more menu items as needed -->
+      </ul>
+    </nav>
+  </div>
+
+  <div class="main-content fadeIn" id="main-content">
+    <div class="container">
+      <div class="dashboard-list">
+        <h2>Dashboard</h2>
+        <table class="table table-striped" id="dashboardTable">
+          <tr>
+            <th>User</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Update</th>
+          </tr>
+          <% dashboardTableData.forEach((data)=> { %>
+            <tr>
+              <td>
+                Admin
+              </td>
+              <td>
+                <%= data.name %>
+              </td>
+              <td>
+                <%= data.email %>
+              </td>
+              <td>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                  data-target="#editModal<%= data._id %>">
+                  Edit
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="editModal<%= data._id %>" tabindex="-1" role="dialog"
+                  aria-labelledby="editModalLabel<%= data._id %>" aria-hidden="true">
+                  <!-- Modal content goes here -->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editModalLabel<%= data._id %>">Edit User</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/dashboard/update-user/<%= data._id %>" method="POST">
+                        <div class="form-group">
+                          <label for="name">Name</label>
+                          <input type="text" class="form-control" id="name<%= data._id %>" name="name"
+                            value="<%= data.name %>" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="email">Email</label>
+                          <input type="email" class="form-control" id="email<%= data._id %>" name="email"
+                            value="<%= data.email %>" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="password">New Password</label>
+                          <input type="password" class="form-control" id="password<%= data._id %>" name="password"
+                            placeholder="Leave blank to keep the current password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+        </table>
+      </div>
+      <div class="complaints-list">
+        <h2>List of Complaints</h2>
+        <table class="table table-striped" id="complaintsTable">
+          <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Tran. ID</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Action</th>
+          </tr>
+          <% complaints.forEach((complaint, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= complaint.name %>
+              </td>
+              <td>
+                <%= complaint.email %>
+              </td>
+              <td>
+                <%= complaint.transactionNumber || '' %>
+              </td>
+              <td>
+                <%= complaint.complaintDescription %>
+              </td>
+              <td>
+                <% if (complaint.predictedCategory) { %>
+                  <%= complaint.predictedCategory %>
+                    <% } else { %>
+                      N/A <!-- Placeholder text or empty string -->
+                      <% } %>
+              </td>
+              <td>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                  data-target="#<%= complaint._id %>Modal">
+                  Send E-mail
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="<%= complaint._id %>Modal" tabindex="-1" role="dialog"
+                  aria-labelledby="<%= complaint._id %>ModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="<%= complaint._id %>ModalLabel">Send E-mail</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="/dashboard/send-email" method="POST" id="form<%= complaint._id %>">
+                          <!-- Dynamic email input field -->
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">@</span>
+                            </div>
+                            <input type="email" class="form-control" value="<%= complaint.email %>" name="email"
+                              placeholder="Enter recipient email" required>
+                          </div>
+                          <!-- Dynamic subject input field -->
+                          <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="subject" placeholder="Enter email subject"
+                              required>
+                          </div>
+                          <div class="input-group mb-3">
+                            <!-- Hidden input to store the complaint description -->
+                            <textarea class="form-control" name="description" placeholder="Enter email description"
+                              required></textarea>
+                          </div>
+                          <input type="hidden" name="complaintId" value="<%= complaint._id %>">
+                        </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary"
+                          onclick="document.getElementById('form<%= complaint._id %>').submit();">Send</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <form action="/dashboard/delete-complaint/<%= complaint._id %>" method="POST">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+        </table>
+      </div>
+      <div class="complaint-status-tracking">
+        <h2>Complaint Status Tracking</h2>
+        <table class="table table-striped" id="complaintStatusTable">
+          <tr>
+            <th>Complainant E-mail</th>
+            <th>Response status</th>
+            <th>Complaint Status</th>
+            <th>Category type</th>
+          </tr>
+          <% complaints.forEach((complaint, index)=> { %>
+            <tr>
+              <td>
+                <%= complaint.email %>
+              </td>
+              <td>
+                <%= complaint.status %> <!-- Default response status -->
+              </td>
+              <td>
+                <form action="/dashboard/solve/<%= complaint._id %>" method="POST">
+                  
+                  <% if (complaint.solved) { %>
+                    <button disabled class="btn btn-secondary">Approved</button>
+                    <% }else{ %>
+                      <input  type="hidden" name="complaintId" value="<%= complaint._id %>">
+                      <button type="submit" class="btn btn-primary">To approve</button>
+                      <% } %>
+                </form>
+              </td>
+              <td>
+                <%= complaint.predictedCategory %>
+              </td>
+            </tr>
+            <% }); %>
+        </table>
+      </div>
+      <div class="inbox-list">
+        <h2>List of inbox complaints feedback</h2>
+        <table class="table table-striped" id="inboxTable">
+          <tr>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+          <% sentEmailsLog.forEach((email)=> { %>
+            <tr>
+              <td>
+                <%= email.email %>
+              </td>
+              <td>
+                <%= email.subject %>
+              </td>
+              <td>
+                <%= email.description %>
+              </td>
+              <td>
+                <!-- Form to handle deletion of the row -->
+                <form action="/dashboard/delete-sent-email/<%= email._id %>" method="POST">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <!-- Footer content goes here -->
+    <p>&copy; 2023 SCCMP. All rights reserved.</p>
+  </div>
+
+  <script>
+    // JavaScript code for the collapsible sidebar
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const menuToggle = document.getElementById('menu-toggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mainContent.classList.toggle('active');
+    });
+
+    // JavaScript code for switching between Complaints and Followups tables
+    function showTable(tableName) {
+      console.log('Show table called with:', tableName);
+      const dashboardTable = document.getElementById('dashboardTable');
+      console.log('Dashboard table:', dashboardTable);
+      const complaintsTable = document.getElementById('complaintsTable');
+      console.log('Complaints table:', complaintsTable);
+      const complaintStatusTable = document.getElementById('complaintStatusTable');
+      console.log('Complaint Status table', complaintStatusTable);
+      const inboxTable = document.getElementById('inboxTable');
+      console.log('inbox table:', inboxTable);
+
+      // Hide all tables and headers
+      dashboardTable.style.display = 'none';
+      complaintsTable.style.display = 'none';
+      complaintStatusTable.style.display = 'none';
+      inboxTable.style.display = 'none';
+
+      // Get references to the headers
+      const dashboardHeader = document.querySelector('.dashboard-list h2');
+      const complaintsHeader = document.querySelector('.complaints-list h2');
+      const ComplaintstatusHeader = document.querySelector('.complaint-status-tracking h2');
+      const inboxHeader = document.querySelector('.inbox-list h2');
+
+
+      dashboardHeader.style.display = 'none';
+      complaintsHeader.style.display = 'none';
+      ComplaintstatusHeader.style.display = 'none';
+      inboxHeader.style.display = 'none';
+
+
+
+      if (tableName === 'dashboard') {
+        dashboardTable.style.display = 'table';
+        dashboardHeader.style.display = 'block';
+      } else if (tableName === 'complaints') {
+        complaintsTable.style.display = 'table';
+        complaintsHeader.style.display = 'block';
+      } else if (tableName === 'complaintStatusTable') {
+        complaintStatusTable.style.display = 'table';
+        ComplaintstatusHeader.style.display = 'block';
+      }
+      else if (tableName === 'inbox') {
+        inboxTable.style.display = 'table';
+        inboxHeader.style.display = 'block';
+      }
+    }
+    showTable('dashboard');
+    function showEditModal(id) {
+      const editModal = document.getElementById(`editModal${id}`);
+      $(editModal).modal('show');
+    }
+
+    // Attach event listeners to the edit buttons
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach((button) => {
+      button.addEventListener('click', (event) => {
+        const userId = event.target.dataset.userid;
+        showEditModal(userId);
+      });
+    });
+
+    const flashMessage = '<%= flash.success %>'; // The flash message will be an array, so we access the "success" property
+
+    if (flashMessage && flashMessage.length > 0) {
+      // Display the flash message in a SweetAlert notification
+      Swal.fire({
+        icon: 'success',
+        title: flashMessage[0], // Access the first element of the array
+      }).then(() => {
+        // Redirect to the dashboard page after the notification is closed
+        window.location.href = '/dashboard';
+      });
+    }
+  // Function to extract the value of the "v" parameter from the URL
+  function getParameterValue(parameterName) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(parameterName);
+  }
+
+
+  // Code to run when the page is loaded
+  window.onload = function () {
+    const vValue = getParameterValue('section');
+
+    // Check if the "v" parameter exists in the URL and if it has a value
+    if (vValue) {
+      showTable(vValue); // Call the showTable function with the value
+    }
+  };
+
+    // function updateResponseStatus(complaintId) {
+    //   console.log('updateResponseStatus called with complaintId:', complaintId);
+    //   console.log("Update Response Status function called.");
+    //   const responseStatusCell = document.getElementById(`responseStatusCell${complaintId}`);
+    //   responseStatusCell.textContent = "Sent";
+    // }
+  </script>
+
+</body>
+
+</html>
