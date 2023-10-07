@@ -1,0 +1,29 @@
+const request = require("supertest");
+const express = require("express");
+const complaintRoutes = require("../routes/complaintRoutes"); 
+
+const app = express();
+app.use(express.json());
+app.use("/", complaintRoutes); // Mount the complaintRoutes on the app
+
+describe("Complaint Routes Test", () => {
+  it("should respond with complaint view", async () => {
+    const response = await request(app).get("/complaint");
+    expect(response.status).toBe(200);
+  });
+
+  it("should handle complaint input and respond with appropriate status code", async () => {
+    const mockComplaintData = {
+      title: "Test Complaint",
+      description: "This is a test complaint"
+    };
+
+    const response = await request(app).post("/submit-complaint").send(mockComplaintData);
+    expect(response.status).toBe(200);
+  });
+
+  it("should respond with all complaints", async () => {
+    const response = await request(app).get("/complaints");
+    expect(response.status).toBe(200);
+  });
+});

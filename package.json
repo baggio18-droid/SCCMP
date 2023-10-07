@@ -1,0 +1,44 @@
+{
+  "name": "sccmp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest Testing files",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.1",
+    "ml-confusion-matrix": "^2.0.0",
+    "ml-matrix": "^6.10.4",
+    "ml-naivebayes": "^4.0.0",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.4",
+    "naivebayes": "^0.5.0",
+    "natural": "^6.5.0",
+    "nodemailer": "^6.9.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "sweetalert2": "^11.7.20"
+  },
+  "json": {
+    "type": "module"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  }
+}
